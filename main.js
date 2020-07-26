@@ -186,3 +186,6 @@ function createCustomChart(props) {
 
     return element;
 }
+
+
+//  TODO: sort reclustering bug 
