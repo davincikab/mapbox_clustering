@@ -4,7 +4,7 @@
     .custom-cluster {
         border-radius: 50%;
         border-width: 7px;
-        border-style: dashed;
+        border-style: double;
         justify-content: center;
         align-items: center;
         display: flex;

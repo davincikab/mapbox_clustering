@@ -43,20 +43,9 @@ map.on('load', function() {
         'source': 'sampleData',
         'filter': ['!=', 'cluster', true],
         'paint': {
-        'circle-color': [
-            'case',
-            value1,
-            colors[0],
-            value2,
-            colors[1],
-            value3,
-            colors[2],
-            value4,
-            colors[3],
-            colors[4]
-        ],
+        'circle-color':'#63D4D8',
         'circle-opacity': 0.6,
-        'circle-radius': 12
+        'circle-radius': ['get', 'value']
         }
     });
 
@@ -65,21 +54,30 @@ map.on('load', function() {
         'type': 'symbol',
         'source': 'sampleData',
         'filter': ['!=', 'cluster', true],
+        'paint':{
+            'text-halo-color':'#fff',
+            'text-halo-blur':2
+        },
         'layout': {
-        'text-field': [
-        'number-format',
-            ['get', 'value'],
-            { 'min-fraction-digits': 1, 'max-fraction-digits': 1 }
-        ],
-        'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-        'text-size': 10
+            'text-field': [
+            'number-format',
+                ['get', 'value'],
+                { 'min-fraction-digits': 1, 'max-fraction-digits': 1 }
+            ],
+            'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+            'text-size':  [
+                'case',
+                ['<', ['get', 'value'], 10],
+                8,
+                10
+            ],
         },
         'paint': {
         'text-color': [
             'case',
             ['<', ['get', 'value'], 3],
             'black',
-            'white'
+            '#2e2e2e'
         ]
         }
     });
@@ -104,7 +102,7 @@ map.on('load', function() {
             var marker = markers[id];
             if (!marker) {
                 var el = createCustomChart(props);
-                marker = markers[id] = new mapboxgl.Marker({
+                marker = markers[id] = new mapboxgl.Marker({    
                 element: el
                 }).setLngLat(coords);
             }
@@ -144,17 +142,17 @@ function createCustomChart(props) {
 
     function getSize(pointCount) {
         if(pointCount < 20) {
-            return 20;
+            return 25;
         }
         return pointCount * 0.8;
     }
 
     function getFontSize(pointCount) {
-        return pointCount < 20 ? 0.6 : pointCount < 50 ? 0.8 : 1;
+        return pointCount < 30 ? 0.75 : pointCount < 50 ? 0.85 : 1;
     }
 
     function getBorderWidth(pointCount) {
-        return pointCount < 20 ? 3 : pointCount < 50 ? 4 : 7;
+        return pointCount < 20 ? 5 : pointCount < 50 ? 6 : 7;
     }
 
     element.innerHTML = props.point_count;
