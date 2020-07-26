@@ -1,0 +1,16 @@
+
+	body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    .custom-cluster {
+        border-radius: 50%;
+        border-width: 7px;
+        border-style: dashed;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        color: cornsilk;
+        font-weight: 900;
+        font-size: 1em;
+        border-color: #22a7b5;
+        background-color:black;
+    }

@@ -1,9 +1,10 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGF1ZGk5NyIsImEiOiJjanJtY3B1bjYwZ3F2NGFvOXZ1a29iMmp6In0.9ZdvuGInodgDk7cv-KlujA';
 var map = new mapboxgl.Map({
-container: 'map',
-zoom: 4,
-center: [-98.47602380565712, 38.71095244108048],
-style: 'mapbox://styles/mapbox/light-v10'
+    container: 'map',
+    zoom: 4,
+    center: [-98.47602380565712, 38.71095244108048],
+    style: 'mapbox://styles/mapbox/light-v10',
+    minZoom:3.4
 });
  
 map.addControl(new mapboxgl.NavigationControl());
@@ -89,7 +90,7 @@ map.on('load', function() {
     
     function updateMarkers() {
         var newMarkers = {};
-        var features = map.querySourceFeatures('earthquakes');
+        var features = map.querySourceFeatures('sampleData');
         
         // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
         // and add it to the map if it's not there already
@@ -121,7 +122,7 @@ map.on('load', function() {
     
     // after the GeoJSON data is loaded, update markers on the screen and do so on every map move/moveend
     map.on('data', function(e) {
-        if (e.sourceId !== 'earthquakes' || !e.isSourceLoaded) return;
+        if (e.sourceId !== 'sampleData' || !e.isSourceLoaded) return;
         
         map.on('move', updateMarkers);
         map.on('moveend', updateMarkers);
@@ -132,5 +133,30 @@ map.on('load', function() {
 
 function createCustomChart(props) {
     console.log(props);
-    return "<div class='custom-cluster'></div>"
+    let element = document.createElement('div');
+    element.classList.add('custom-cluster');
+
+    element.style.width = element.style.height = getSize(props.point_count) + "px";
+
+    // calculate the fonts and border width
+    element.style.fontSize = getFontSize(props.point_count) + "em";
+    element.style.borderWidth =  getBorderWidth(props.point_count) + "px";
+
+    function getSize(pointCount) {
+        if(pointCount < 20) {
+            return 20;
+        }
+        return pointCount * 0.8;
+    }
+
+    function getFontSize(pointCount) {
+        return pointCount < 20 ? 0.6 : pointCount < 50 ? 0.8 : 1;
+    }
+
+    function getBorderWidth(pointCount) {
+        return pointCount < 20 ? 3 : pointCount < 50 ? 4 : 7;
+    }
+
+    element.innerHTML = props.point_count;
+    return element;
 }
