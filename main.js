@@ -95,6 +95,7 @@ map.on('load', function() {
         for (var i = 0; i < features.length; i++) {
             var coords = features[i].geometry.coordinates;
             var props = features[i].properties;
+            props.coordinates = coords
 
             if (!props.cluster) continue;
             var id = props.cluster_id;
@@ -124,15 +125,36 @@ map.on('load', function() {
         
         map.on('move', updateMarkers);
         map.on('moveend', updateMarkers);
+        map.on('zoomend', updateMarkers);
         updateMarkers();
     });
 
 });
 
+function zoomToCluster(e, id) {
+    let element = document.getElementById(id.toString());
+    console.log(eval(element.getAttribute('data-coord')));
+
+    var clusterId = id;
+    map.getSource('sampleData').getClusterExpansionZoom(
+        clusterId,
+        function(err, zoom) {
+            if (err) return;
+            
+            map.easeTo({
+                center: eval(element.getAttribute('data-coord')),
+                zoom: zoom
+            });
+        }
+    );
+}
+
 function createCustomChart(props) {
     console.log(props);
     let element = document.createElement('div');
     element.classList.add('custom-cluster');
+    element.setAttribute('id', props.cluster_id);
+    element.setAttribute('data-coord', "["+props.coordinates+"]");
 
     element.style.width = element.style.height = getSize(props.point_count) + "px";
 
@@ -156,5 +178,11 @@ function createCustomChart(props) {
     }
 
     element.innerHTML = props.point_count;
+
+    // add event listener
+    element.addEventListener('click' , function(e) {
+        zoomToCluster(e,props.cluster_id);
+    });
+
     return element;
 }
